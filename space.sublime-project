@@ -4,9 +4,10 @@
 			"path": ".",
 			"name": "Space | LiveryWallpaper",
 			"folder_exclude_patterns": [
-				"node_modules"
+				"node_modules",
+				"dest"
 			],
-			"file_exclude_patterns": ["**/*.zip", "**/*-lock.json"]
+			"file_exclude_patterns": ["**/*.zip", "**/*-lock.json","**/html_*.*"]
 		}
 	],
 	"settings":  {

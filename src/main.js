@@ -52,7 +52,7 @@ let PARTICLE_NUM = 500,
 	setFont = function()
 	{
 		font && document.fonts.delete(font);
-		font = new FontFace("DIGIT-CL", 'url(font/digit-cl.ttf)');
+		font = new FontFace("DIGIT-CL", 'url(digit-cl.ttf)');
 		font.load().then(function(fn) {
 			font = fn;
 			document.fonts.add(font);
@@ -94,7 +94,7 @@ let PARTICLE_NUM = 500,
 	**/
 	loop = function()
 	{
-		cancelAnimationFrame(requestID);
+		window.cancelAnimationFrame(requestID);
 		const FPL = 500,
 			CENTER_X = centerX,
 			CENTER_Y = centerY;
@@ -277,8 +277,8 @@ let PARTICLE_NUM = 500,
 	},
 	i;
 // Lively Wallpaper Property Listener
-function livelyPropertyListener(name, val){
-	cancelAnimationFrame(requestID);
+window.livelyPropertyListener = function (name, val){
+	window.cancelAnimationFrame(requestID);
 	root[name] = val;
 	speed = root.DEFAULT_SPEED;
 	switch(name){

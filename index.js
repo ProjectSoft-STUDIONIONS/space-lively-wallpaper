@@ -15,7 +15,8 @@ const DEBUG = parseInt(process.env.DEBUG) || false, // 1 or 0
 	Imagemin = require('imagemin'),
 	colors = require('colors'),
 	dirname = __dirname.replace(/\\/g, '/');
-
+let time_1 = new Date().getTime(),
+	time_2 = 0;
 colors.setTheme({});
 	// Информация о обоях
 const LivelyInfo = {
@@ -128,39 +129,34 @@ const LivelyInfo = {
 	},
 	log = function(name, log) {
 		if(DEBUG) {
-			let ht = (new Date().getHours() + '').padStart(2, '0'),
-				mt = (new Date().getMinutes() + '').padStart(2, '0'),
-				st = (new Date().getSeconds() + '').padStart(2, '0'),
-				ms = (new Date().getMilliseconds() + '').padStart(3, '0'),
+			let ht  = (new Date().getHours() + '').padStart(2, '0'),
+				mt  = (new Date().getMinutes() + '').padStart(2, '0'),
+				st  = (new Date().getSeconds() + '').padStart(2, '0'),
+				ms  = (new Date().getMilliseconds() + '').padStart(3, '0'),
 				std = `${ht}:${mt}:${st}.${ms}`;
 			name = `${name}`.padEnd(padLength, ' ');
-			name = colors.supportsColor ? name.yellow : name;
-			log = (colors.supportsColor) ? log.cyan : log;
-			std =  colors.supportsColor ? std.white : std;
+			name = colors.supportsColor ? colors.yellow(name) : name;
+			log  = colors.supportsColor ? colors.cyan(log) : log;
+			std  =  colors.supportsColor ? colors.white(std) : std;
 			console.log(`${name}${std} ${log}`);
 		}
 	},
 	info = function(str){
 		str = str.padEnd(padLength - 1, ' .') + ' ';
-		let inf = (DEBUG ? `\r\n` : '');
-		if(colors.supportsColor){
-			console.log(colors.yellow(`${inf}${str}`) + colors.cyan(`${pkg.title} v${pkg.version}${inf}`));
-		}else{
-			console.log(`${inf}${str}${pkg.title} v${pkg.version}${inf}`);
-		}
+		let inf = (DEBUG ? `\r\n` : ''),
+			out = colors.supportsColor ? (`${inf}` + colors.yellow(`${str}`) + colors.cyan(`${pkg.title} v${pkg.version}`) + `${inf}`) : `${inf}${str}${pkg.title} v${pkg.version}${inf}`;
+		console.log(out);
 		done(`\u0023\u0421\u0432\u043e\u0438\u0445\u041d\u0435\u0411\u0440\u043e\u0441\u0430\u0435\u043c`);
 	},
 	done = function(str){
 		const sm = `\u2588`,
-			nl = ` `.padEnd(padLength, ' ');
+			nl = ` `.padEnd(padLength, ' '),
+			rn = DEBUG ? `` : `\r\n`;
 		let len = str.length + 2,
 			tb = ``.padEnd(len, sm),
-			cl = (sm.blue + str.white + sm.blue).bgBlue;
-		if(colors.supportsColor){
-			console.log((DEBUG ? `` : `\r\n`) + `${nl}${tb.white.bgWhite}\r\n${nl}${cl}\r\n${nl}${tb.red.bgRed}\r\n`);
-		}else{
-			console.log((DEBUG ? `` : `\r\n`) + `${nl}${str}\r\n`);
-		}
+			snb = colors.bgBlue(colors.blue(sm) + colors.white(str) + colors.blue(sm)),
+			out = colors.supportsColor ? `${rn}${nl}${tb.white.bgWhite}\r\n${nl}${snb}\r\n${nl}${tb.red.bgRed}` : `${rn}${nl}${str}`
+		console.log(`${out}\r\n`);
 	},
 	deleteFolder = function(dir) {
 		return new Promise((resolve, reject) => {
@@ -202,7 +198,8 @@ deleteFolder(path.join(__dirname, `dest`)).then((result) => {
 			plugins: []
 		};
 	// Создаём LICENSE
-	fs.writeFileSync(path.join(__dirname, `dest`, `LICENSE`), fs.readFileSync(path.join(__dirname, `LICENSE`), `utf8`), {encoding: `utf8`});
+	const LICENSE = fs.readFileSync(path.join(__dirname, `LICENSE`), `utf8`);
+	fs.writeFileSync(path.join(__dirname, `dest`, `LICENSE`), LICENSE, {encoding: `utf8`});
 	log('File Created', path.join(__dirname, `dest`, `LICENSE`));
 
 	// Сохраняем LivelyInfo в JSON файл с форматированием
@@ -265,23 +262,19 @@ deleteFolder(path.join(__dirname, `dest`)).then((result) => {
 								// Коипилируем JS
 								let codeJS = fs.readFileSync(path.join(__dirname, `src`, `main.js`), "utf8");
 								// Сохраняем JS
-								fs.writeFileSync(path.join(__dirname, `src`, `html_index.js`), UglifyJS.minify({
-									"main.js": codeJS
-								}, {}).code, "utf8");
+								fs.writeFileSync(path.join(__dirname, `src`, `html_index.js`), UglifyJS.minify( codeJS, { mangle: { toplevel: true}, compress: { drop_console: true } }).code, "utf8");
 								log('File Created', path.join(__dirname, `src`, `html_index.js`));
 								// Копируем шрифт
 								let ftd, ftf;
-								if(ftd = fs.mkdirSync(path.join(__dirname, `dest`, `font`), {recursive: true, mode: 0o777})){
-									if(ftf = fs.readFileSync(path.join(__dirname, `src`, `fonts`, `digit-cl.ttf`))) {
-										fs.writeFileSync(path.join(__dirname, `dest`, `font`, `digit-cl.ttf`), ftf)
-										log('File Copied', path.join(__dirname, `dest`, `font`, `digit-cl.ttf`));
-									}
+								if(ftf = fs.readFileSync(path.join(__dirname, `src`, `fonts`, `digit-cl.ttf`))) {
+									fs.writeFileSync(path.join(__dirname, `dest`, `digit-cl.ttf`), ftf)
+									log('File Copied', path.join(__dirname, `dest`, `digit-cl.ttf`));
 								}
 								// Рендер pug в html
 								log('File Compiled', path.join(__dirname, `src`, `index.pug`));
 								const html = pug.renderFile(path.join(__dirname, `src`, `index.pug`), html_options);
 								// Сохраняем html в файл
-								fs.writeFileSync(path.join(__dirname, `dest`, `index.html`), html, {encoding: `utf8`});
+								fs.writeFileSync(path.join(__dirname, `dest`, `index.html`), `<!--\n${LICENSE}-->\n${html}`, {encoding: `utf8`});
 								log('File Created', path.join(__dirname, `dest`, `index.html`));
 								// Удаляем скомпилированный js
 								fs.existsSync(path.join(__dirname, `src`, `html_index.js`)) && (
@@ -303,7 +296,11 @@ deleteFolder(path.join(__dirname, `dest`)).then((result) => {
 										// Удаляем dest
 										deleteFolder(path.join(__dirname, `dest`)).then((result) => {
 											log('Folder Deleted', result);
-											info(`DONE`);
+											time_2 = new Date().getTime();
+											let tm = String((time_2 - time_1) / 1000) + ` seconds`;
+											console.log(` `);
+											log(`BUILD TIME`, tm);
+											info(`DONE `);
 										}).catch((error) => {
 											log('ERROR', error);
 										});
