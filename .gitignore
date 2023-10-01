@@ -7,3 +7,4 @@ dest/
 **/*.sublime-workspace
 **/*.ini
 **/*.mp4
+.env
