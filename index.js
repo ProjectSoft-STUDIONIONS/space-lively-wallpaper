@@ -127,17 +127,17 @@ const LivelyInfo = {
 			"step": 0.01
 		}
 	},
-	log = function(name, log) {
-		if(DEBUG) {
-			let ht  = (new Date().getHours() + '').padStart(2, '0'),
-				mt  = (new Date().getMinutes() + '').padStart(2, '0'),
-				st  = (new Date().getSeconds() + '').padStart(2, '0'),
-				ms  = (new Date().getMilliseconds() + '').padStart(3, '0'),
-				std = `${ht}:${mt}:${st}.${ms}`;
-			name = `${name}`.padEnd(padLength, ' ');
-			name = colors.supportsColor ? colors.yellow(name) : name;
-			log  = colors.supportsColor ? colors.cyan(log) : log;
-			std  =  colors.supportsColor ? colors.white(std) : std;
+	log = function(name, log, deb=false) {
+		let ht  = (new Date().getHours() + '').padStart(2, '0'),
+			mt  = (new Date().getMinutes() + '').padStart(2, '0'),
+			st  = (new Date().getSeconds() + '').padStart(2, '0'),
+			ms  = (new Date().getMilliseconds() + '').padStart(3, '0'),
+			std = `${ht}:${mt}:${st}.${ms}`;
+		name = `${name}`.padEnd(padLength, ' ');
+		name = colors.supportsColor ? colors.yellow(name) : name;
+		log  = colors.supportsColor ? colors.cyan(log) : log;
+		std  =  colors.supportsColor ? colors.white(std) : std;
+		if(DEBUG || deb) {
 			console.log(`${name}${std} ${log}`);
 		}
 	},
@@ -299,7 +299,7 @@ deleteFolder(path.join(__dirname, `dest`)).then((result) => {
 											time_2 = new Date().getTime();
 											let tm = String((time_2 - time_1) / 1000) + ` seconds`;
 											console.log(` `);
-											log(`BUILD TIME`, tm);
+											log(`BUILD TIME`, tm, true);
 											info(`DONE `);
 										}).catch((error) => {
 											log('ERROR', error);
