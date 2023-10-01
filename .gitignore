@@ -1,0 +1,12 @@
+# Dependency directories
+node_modules/
+space-lively-wallpaper/
+# Project build directory
+dest/
+# Ignored files
+**/*.sublime-workspace
+**/*.zip
+**/*.ini
+**/*.mp4
+src/index.js
+src/main.css

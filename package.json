@@ -1,0 +1,22 @@
+{
+	"name": "space-lively-wallpaper",
+	"version": "1.0.5",
+	"title": "«Сквозь вселенную»",
+	"description": "«Сквозь вселенную» Lively Wallpaper",
+	"main": "index.js",
+	"scripts": {
+		"inst": "npm install && npm i -g less && npm i -g less-plugin-clean-css && npm i -g uglify-js && npm i -g imagemin-cli && npm ci",
+		"build": "node index.js"
+	},
+	"author": "ProjectSoft",
+	"homepage": "https://github.com/ProjectSoft-STUDIONIONS/space-lively-wallpaper",
+	"license": "MIT",
+	"dependencies": {
+		"dotenv": "latest",
+		"imagemin-newer": "latest",
+		"pug": "latest",
+		"uglify-js": "latest",
+		"zip-lib": "latest",
+		"less": "latest"
+	}
+}

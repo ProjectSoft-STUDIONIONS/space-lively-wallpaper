@@ -1,0 +1,43 @@
+name: Node.js Digit
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+        Name:
+            description: Main Branch
+            required: true
+            default: 'Main Branch'
+  release:
+    types: [published]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm run inst
+    - run: npm ci
+    - run: npm run build
+    #- name: send telegram message on push
+    #  uses: appleboy/telegram-action@master
+    #  with:
+    #    to: ${{ secrets.TELEGRAM_TO }}
+    #    token: ${{ secrets.TELEGRAM_TOKEN }}
+    #    message: |
+    #      ${{ github.actor }} created commit:
+    #      Commit message: ${{ github.event.commits[0].message }}
+    #      
+    #      Repository: ${{ github.repository }}
+    #      
+    #      See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
