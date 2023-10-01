@@ -7,4 +7,3 @@ dest/
 **/*.sublime-workspace
 **/*.ini
 **/*.mp4
-# Перед отправкой удалить **/*.zip
