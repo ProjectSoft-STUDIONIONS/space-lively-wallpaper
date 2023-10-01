@@ -1,9 +1,5 @@
-name: Test Build
+name: Run Build and Push
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
   workflow_dispatch:
     inputs:
         Name:
@@ -31,16 +27,13 @@ jobs:
     - run: npm run inst
     - run: npm ci
     - run: npm run build
-
-    #- name: send telegram message on push
-    #  uses: appleboy/telegram-action@master
-    #  with:
-    #    to: ${{ secrets.TELEGRAM_TO }}
-    #    token: ${{ secrets.TELEGRAM_TOKEN }}
-    #    message: |
-    #      ${{ github.actor }} created commit:
-    #      Commit message: ${{ github.event.commits[0].message }}
-    #      
-    #      Repository: ${{ github.repository }}
-    #      
-    #      See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+    - name: Commit changes
+      id: "add-and-commit"
+      uses: EndBug/add-and-commit@v9
+      with:
+        add: "space-lively-wallpaper.zip"
+        message: "Update"
+        author_name: "ProjectSoft-STUDIONIONS"
+        author_email: "projectsoft2009@yandex.ru"
+        committer_name: "ProjectSoft-STUDIONIONS"
+        committer_email: "projectsoft2009@yandex.ru"
