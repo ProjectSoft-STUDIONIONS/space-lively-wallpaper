@@ -1,6 +1,7 @@
 # Dependency directories
 node_modules/
 space-lively-wallpaper/
+src/test/
 # Project build directory
 dest/
 # Ignored files

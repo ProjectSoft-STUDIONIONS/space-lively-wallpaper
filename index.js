@@ -209,7 +209,8 @@ deleteFolder(path.join(__dirname, `dest`)).then((result) => {
 	// Сохраняем LivelyProperty в JSON файл с форматированием
 	fs.writeFileSync(path.join(__dirname, `dest`, `LivelyProperties.json`), JSON.stringify(LivelyProperty, null, "\t"), {encoding: `utf8`});
 	log('File Created', path.join(__dirname, `dest`, `LivelyProperties.json`));
-
+	// Создаём временную папку test
+	fs.mkdirSync(path.join(__dirname, `src`, `test`));
 	// Компилируем LESS 
 	log('File Compiled', path.join(__dirname, `src`, `main.less`));
 	less.render(
@@ -223,8 +224,8 @@ deleteFolder(path.join(__dirname, `dest`)).then((result) => {
 		.then(
 			function(output) {
 				// Сохраняем CSS
-				fs.writeFileSync(path.join(__dirname, `src`, `html_index.css`), output.css, {encoding: `utf8`});
-				log('File Created', path.join(__dirname, `src`, `html_index.css`));
+				fs.writeFileSync(path.join(__dirname, `src`, `test`, `html_index.css`), output.css, {encoding: `utf8`});
+				log('File Created', path.join(__dirname, `src`, `test`, `html_index.css`));
 				// Оптимизируем изображения для LivelyInfo
 				new Imagemin()
 					.src(path.join(__dirname, `src`, `*.{gif,jpg}`))
@@ -262,8 +263,8 @@ deleteFolder(path.join(__dirname, `dest`)).then((result) => {
 								// Коипилируем JS
 								let codeJS = fs.readFileSync(path.join(__dirname, `src`, `main.js`), "utf8");
 								// Сохраняем JS
-								fs.writeFileSync(path.join(__dirname, `src`, `html_index.js`), UglifyJS.minify( codeJS, { mangle: { toplevel: true}, compress: { drop_console: true } }).code, "utf8");
-								log('File Created', path.join(__dirname, `src`, `html_index.js`));
+								fs.writeFileSync(path.join(__dirname, `src`, `test`, `html_index.js`), UglifyJS.minify( codeJS, { mangle: { toplevel: true}, compress: { drop_console: true } }).code, "utf8");
+								log('File Created', path.join(__dirname, `src`, `test`, `html_index.js`));
 								// Копируем шрифт
 								let ftd, ftf;
 								if(ftf = fs.readFileSync(path.join(__dirname, `src`, `fonts`, `digit-cl.ttf`))) {
@@ -276,46 +277,48 @@ deleteFolder(path.join(__dirname, `dest`)).then((result) => {
 								// Сохраняем html в файл
 								fs.writeFileSync(path.join(__dirname, `dest`, `index.html`), `<!--\n${LICENSE}-->\n${html}`, {encoding: `utf8`});
 								log('File Created', path.join(__dirname, `dest`, `index.html`));
-								// Удаляем скомпилированный js
-								fs.existsSync(path.join(__dirname, `src`, `html_index.js`)) && (
-									fs.unlinkSync(path.join(__dirname, `src`, `html_index.js`)),
-									log('File Deleted', path.join(__dirname, `src`, `html_index.js`))
-								);
-								// Удаляем скомпилированный css
-								fs.existsSync(path.join(__dirname, `src`, `html_index.css`)) && (
-									fs.unlinkSync(path.join(__dirname, `src`, `html_index.css`)),
-									log('File Deleted', path.join(__dirname, `src`, `html_index.css`))
-								);
-								// Упаковываем содержимое dest в ZIP
-								log('Packing Files', path.join(__dirname, `dest`));
-								const zip = new ZipLib.Zip();
-								zip.addFolder(path.join(__dirname, `dest`));
-								zip.archive(path.join(__dirname, `${pkg.name}.zip`)).then(
-									function () {
-										log(`File Created`, path.join(__dirname, `${pkg.name}.zip`));
-										// Удаляем dest
-										deleteFolder(path.join(__dirname, `dest`)).then((result) => {
-											log('Folder Deleted', result);
-											time_2 = new Date().getTime();
-											let tm = String((time_2 - time_1) / 1000) + ` seconds`;
-											console.log(` `);
-											log(`BUILD TIME`, tm, true);
-											info(`DONE `);
-										}).catch((error) => {
+								// Удаляем test
+								deleteFolder(path.join(__dirname, `src`, `test`)).then((result) => {
+									log('Folder Deleted', result);
+									// Упаковываем содержимое dest в ZIP
+									log('Packing Files', path.join(__dirname, `dest`));
+									const zip = new ZipLib.Zip();
+									zip.addFolder(path.join(__dirname, `dest`));
+									zip.archive(path.join(__dirname, `${pkg.name}.zip`)).then(
+										function () {
+											log(`File Created`, path.join(__dirname, `${pkg.name}.zip`));
+											// Удаляем dest
+											deleteFolder(path.join(__dirname, `dest`)).then((result) => {
+												log('Folder Deleted', result);
+												time_2 = new Date().getTime();
+												let tm = String((time_2 - time_1) / 1000) + ` seconds`;
+												console.log(` `);
+												log(`BUILD TIME`, tm, true);
+												info(`DONE `);
+											}).catch((error) => {
+												log('ERROR', error);
+												deleteFolder(path.join(__dirname, `dest`));
+											});
+										},
+										function (error) {
 											log('ERROR', error);
-										});
-									},
-									function (error) {
-										log('ERROR', error);
-									}
-								);
+											deleteFolder(path.join(__dirname, `dest`));
+										}
+									);
+								}).catch((error) => {
+									log('ERROR', error);
+									deleteFolder(path.join(__dirname, `dest`));
+								});
 							});
 					});
 			},
 			function(error) {
 				log('ERROR', error);
+				deleteFolder(path.join(__dirname, `dest`));
+				deleteFolder(path.join(__dirname, `src`, `test`));
 			}
 		);
 }).catch((error) => {
 	log('ERROR', error);
+	deleteFolder(path.join(__dirname, `src`, `test`));
 });

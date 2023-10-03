@@ -5,7 +5,8 @@
 			"name": "Space | LiveryWallpaper",
 			"folder_exclude_patterns": [
 				"node_modules",
-				"dest"
+				"dest",
+				"test"
 			],
 			"file_exclude_patterns": ["**/*-lock.json","**/html_*.*"]
 		}
