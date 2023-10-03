@@ -1,14 +1,11 @@
 {
 	"folders": [
 		{
-			"path": ".",
+			"path": "./src",
 			"name": "Space | LiveryWallpaper",
 			"folder_exclude_patterns": [
-				"node_modules",
-				"dest",
 				"test"
-			],
-			"file_exclude_patterns": ["**/*-lock.json","**/html_*.*"]
+			]
 		}
 	],
 	"settings":  {

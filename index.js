@@ -23,7 +23,7 @@ const LivelyInfo = {
 		"AppVersion": `${pkg.version}.0`,
 		"Title": `${pkg.title} v${pkg.version}`,
 		"Thumbnail": `${pkg.name}.jpg`,
-		"Preview": `${pkg.name}_preview.gif`,
+		"Preview": `${pkg.name}.gif`,
 		"Desc": `${pkg.description}`,
 		"Author": `${pkg.author}`,
 		"License": `${pkg.license}`,
