@@ -1,10 +1,16 @@
 {
 	"folders": [
 		{
-			"path": "./src",
+			"path": ".",
 			"name": "Space | LiveryWallpaper",
 			"folder_exclude_patterns": [
+				"bower_components",
+				"dest",
+				"node_modules",
 				"test"
+			],
+			"file_exclude_patterns": [
+				"*-lock.*"
 			]
 		}
 	],
@@ -21,7 +27,7 @@
 		{
 			"name": "LiveryWallpaper Install",
 			"working_dir": "${project_path}",
-			"shell_cmd": "npm install && npm i -g less && npm i -g less-plugin-clean-css && npm i -g uglify-js && npm i -g imagemin-cli && npm ci"
+			"shell_cmd": "npm i -g less less-plugin-clean-css uglify-js imagemin-cli && npm i &&  npm ci"
 		}
 	]
 }
