@@ -18,6 +18,5 @@ jobs:
           message: |
             🎉🎉🎉 Новый релиз: 🎉🎉🎉
             *${{ github.event.release.name }}*
-            ${{ github.event.release.description }}
             [Подробнее](https://github.com/ProjectSoft-STUDIONIONS/space-lively-wallpaper/releases/tag/${{ github.ref_name }})
             Автор: *${{ github.event.release.author.login }}*
