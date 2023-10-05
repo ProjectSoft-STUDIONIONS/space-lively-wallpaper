@@ -6,4 +6,4 @@
 
 Настраиваем под свой вкус и наслаждаемся.
 
-<img src="src/image/0001.gif" alt="«Сквозь вселенную» Lively Wallpaper">
+![«Сквозь вселенную» Lively Wallpaper](https://github.com/ProjectSoft-STUDIONIONS/space-lively-wallpaper/raw/main/src/image/0001.gif)
