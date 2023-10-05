@@ -86,8 +86,9 @@ let PARTICLE_NUM = 500,
 			hour = String(date.getHours()).padStart(2, "0"),
 			minute = String(date.getMinutes()).padStart(2, "0"),
 			second = String(date.getSeconds()).padStart(2, "0"),
-			ms = date.getMilliseconds() >= 500 ? ";" : ":";
-		return `${hour}${ms}${minute}${ms}${second}`;
+			ms = date.getMilliseconds() >= 500 ? ";" : ":",
+			mms = String(parseInt(date.getMilliseconds() / 100));
+		return `${hour}${ms}${minute}${ms}${second}.${mms}`;
 	},
 	/**
 	 * Анимация

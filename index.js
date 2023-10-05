@@ -1,4 +1,6 @@
 'use strict'
+let time_1 = new Date().getTime(),
+	time_2 = 0;
 
 require('dotenv').config();
 
@@ -15,8 +17,6 @@ const DEBUG = parseInt(process.env.DEBUG) || false, // 1 or 0
 	Imagemin = require('imagemin'),
 	colors = require('colors'),
 	dirname = __dirname.replace(/\\/g, '/');
-let time_1 = new Date().getTime(),
-	time_2 = 0;
 colors.setTheme({});
 	// Информация о обоях
 const LivelyInfo = {
