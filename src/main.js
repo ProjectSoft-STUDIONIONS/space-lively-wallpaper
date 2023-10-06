@@ -86,9 +86,8 @@ let PARTICLE_NUM = 500,
 			hour = String(date.getHours()).padStart(2, "0"),
 			minute = String(date.getMinutes()).padStart(2, "0"),
 			second = String(date.getSeconds()).padStart(2, "0"),
-			ms = date.getMilliseconds() >= 500 ? ";" : ":",
-			mms = String(parseInt(date.getMilliseconds() / 100));
-		return `${hour}${ms}${minute}${ms}${second}.${mms}`;
+			ms = date.getMilliseconds() >= 500 ? ";" : ":";
+		return `${hour}${ms}${minute}${ms}${second}`;
 	},
 	/**
 	 * Анимация
@@ -96,7 +95,7 @@ let PARTICLE_NUM = 500,
 	loop = function()
 	{
 		window.cancelAnimationFrame(requestID);
-		const FPL = 500,
+		const FPL = 200,
 			CENTER_X = centerX,
 			CENTER_Y = centerY;
 		let p,
@@ -306,6 +305,11 @@ window.livelyPropertyListener = function (name, val){
 			break;
 	}
 	loop();
+}
+window.livelyWallpaperPlaybackChanged = function(data) {
+	let obj = JSON.parse(data),
+		isPaused = obj.IsPaused;
+	isPaused ? window.cancelAnimationFrame(requestID) : loop();
 }
 // Загружаем шрифт
 setFont();
