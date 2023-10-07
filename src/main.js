@@ -13,6 +13,7 @@ let PARTICLE_NUM = 500,
 	FONT_SIZE = 52,
 	FONT_COLOR = "#FFFFFF",
 	FONT_ALPHA = 0.25,
+	MS_CHECK = true,
 	tmpFontSize = 52,
 	fontColor = 'rgba(0, 255, 0, 1)',
 	padding = 15,
@@ -37,7 +38,8 @@ let PARTICLE_NUM = 500,
 		FONT_SIZE: FONT_SIZE,
 		FONT_COLOR:FONT_COLOR ,
 		FONT_ALPHA: FONT_ALPHA,
-		CLOCK_POSITION: CLOCK_POSITION
+		CLOCK_POSITION: CLOCK_POSITION,
+		MS_CHECK: MS_CHECK
 	},
 	contain = {
 		image: null,
@@ -86,8 +88,10 @@ let PARTICLE_NUM = 500,
 			hour = String(date.getHours()).padStart(2, "0"),
 			minute = String(date.getMinutes()).padStart(2, "0"),
 			second = String(date.getSeconds()).padStart(2, "0"),
-			ms = date.getMilliseconds() >= 500 ? ";" : ":";
-		return `${hour}${ms}${minute}${ms}${second}`;
+			ms = date.getMilliseconds(),
+			dvr = ms >= 500 ? ";" : ":";
+		ms = root.MS_CHECK ? (`.` + String(parseInt(ms / 100))) : ``;
+		return `${hour}${dvr}${minute}${dvr}${second}${ms}`;
 	},
 	/**
 	 * Анимация
@@ -276,6 +280,16 @@ let PARTICLE_NUM = 500,
 		}
 	},
 	i;
+// Загружаем шрифт
+setFont();
+// Подписываемся на событие и запускаем Ресайз
+window.addEventListener('resize', resize);
+resize();
+// Сoздаём Звёзды
+createParticles();
+// Запуск Анимации
+requestID = window.requestAnimationFrame(loop);
+
 // Lively Wallpaper Property Listener
 window.livelyPropertyListener = function (name, val){
 	window.cancelAnimationFrame(requestID);
@@ -306,17 +320,9 @@ window.livelyPropertyListener = function (name, val){
 	}
 	loop();
 }
+// Lively Wallpaper Playback Changed
 window.livelyWallpaperPlaybackChanged = function(data) {
 	let obj = JSON.parse(data),
 		isPaused = obj.IsPaused;
 	isPaused ? window.cancelAnimationFrame(requestID) : loop();
 }
-// Загружаем шрифт
-setFont();
-// Подписываемся на событие и запускаем Ресайз
-window.addEventListener('resize', resize);
-resize();
-// Сoздаём Звёзды
-createParticles();
-// Запуск Анимации
-requestID = window.requestAnimationFrame(loop);

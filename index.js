@@ -29,6 +29,7 @@ const LivelyInfo = {
 		"License": `${pkg.license}`,
 		"Contact": `${pkg.homepage}`,
 		"Type": 1,
+		"Arguments": "--pause-event true",
 		"FileName": "index.html"
 	},
 	// Настройки обоев
@@ -125,7 +126,13 @@ const LivelyInfo = {
 			"min": 0,
 			"max": 1,
 			"step": 0.01
-		}
+		},
+		"MS_CHECK": {
+			// Показать миллисекунды
+			"text": "Показать миллисекунды",
+			"type": "checkbox",
+			"value": false
+		},
 	},
 	log = function(name, log, deb=false) {
 		let ht  = (new Date().getHours() + '').padStart(2, '0'),
