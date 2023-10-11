@@ -1,6 +1,7 @@
 'use strict'
 let time_1 = new Date().getTime(),
-	time_2 = 0;
+	time_2 = 0,
+	tm = '';
 
 require('dotenv').config();
 
@@ -148,22 +149,29 @@ const LivelyInfo = {
 			console.log(`${name}${std} ${log}`);
 		}
 	},
-	info = function(str){
+	info = function(str, build = false){
 		str = str.padEnd(padLength - 1, ' .') + ' ';
 		let inf = (DEBUG ? `\r\n` : ''),
 			out = colors.supportsColor ? (`${inf}` + colors.yellow(`${str}`) + colors.cyan(`${pkg.title} v${pkg.version}`) + `${inf}`) : `${inf}${str}${pkg.title} v${pkg.version}${inf}`;
 		console.log(out);
-		done(`\u0023\u0421\u0432\u043e\u0438\u0445\u041d\u0435\u0411\u0440\u043e\u0441\u0430\u0435\u043c`);
+		done(`\u0023\u0421\u0432\u043e\u0438\u0445\u041d\u0435\u0411\u0440\u043e\u0441\u0430\u0435\u043c`, build);
 	},
-	done = function(str){
+	done = function(str, build = false){
 		const sm = `\u2588`,
 			nl = ` `.padEnd(padLength, ' '),
 			rn = DEBUG ? `` : `\r\n`;
 		let len = str.length + 2,
 			tb = ``.padEnd(len, sm),
 			snb = colors.bgBlue(colors.blue(sm) + colors.white(str) + colors.blue(sm)),
-			out = colors.supportsColor ? `${rn}${nl}${tb.white.bgWhite}\r\n${nl}${snb}\r\n${nl}${tb.red.bgRed}` : `${rn}${nl}${str}`
+			out = colors.supportsColor ? `${rn}${nl}${tb.white.bgWhite}\r\n${nl}${snb}\r\n${nl}${tb.red.bgRed}` : `${rn}${nl}${str}`;
 		console.log(`${out}\r\n`);
+		if(build){
+			time_2 = new Date().getTime();
+			tm = String((time_2 - time_1) / 1000) + ` seconds`;
+			console.log(` `);
+			log(`BUILD TIME`, tm, true);
+			console.log(` `);
+		}
 	},
 	deleteFolder = function(dir) {
 		return new Promise((resolve, reject) => {
@@ -175,7 +183,7 @@ const LivelyInfo = {
 					resolve(dir);
 				});
 			}else{
-				resolve('Folder Deleted Previously')
+				resolve(`Folder Deleted Previously`)
 			}
 		});
 	},
@@ -241,6 +249,7 @@ const LivelyInfo = {
 						 	.run(function (error, files) {
 								if (error) {
 									log('ERROR', error);
+									info(`DONE `, true);
 									return;
 								}
 								files.forEach(function(a, b, c) {
@@ -257,6 +266,7 @@ const LivelyInfo = {
 								 	.run(function (error, files) {
 										if (error) {
 											log('ERROR', error);
+											info(`DONE `, true);
 											return;
 										}
 										files.forEach(function(a, b, c) {
@@ -294,24 +304,23 @@ const LivelyInfo = {
 													// Удаляем dest
 													deleteFolder(path.join(__dirname, `dest`)).then((result) => {
 														log('Folder Deleted', result);
-														time_2 = new Date().getTime();
-														let tm = String((time_2 - time_1) / 1000) + ` seconds`;
-														console.log(` `);
-														log(`BUILD TIME`, tm, true);
-														info(`DONE `);
+														info(`DONE `, true);
 													}).catch((error) => {
 														log('ERROR', error);
 														deleteFolder(path.join(__dirname, `dest`));
+														info(`DONE `, true);
 													});
 												},
 												function (error) {
 													log('ERROR', error);
 													deleteFolder(path.join(__dirname, `dest`));
+													info(`DONE `, true);
 												}
 											);
 										}).catch((error) => {
 											log('ERROR', error);
 											deleteFolder(path.join(__dirname, `dest`));
+											info(`DONE `, true);
 										});
 									});
 							});
@@ -320,10 +329,12 @@ const LivelyInfo = {
 						log('ERROR', error);
 						deleteFolder(path.join(__dirname, `dest`));
 						deleteFolder(path.join(__dirname, `src`, `test`));
+						info(`DONE `, true);
 					}
 				);
 		}).catch((error) => {
 			log('ERROR', error);
+			info(`DONE `, true);
 		});
 	};
 
